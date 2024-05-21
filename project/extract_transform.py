@@ -8,11 +8,9 @@ def main():
     data_source_1 = "https://www-genesis.destatis.de/genesis/downloads/00/tables/85111-0001_00.csv"
     data_source_2 = "https://www-genesis.destatis.de/genesis/downloads/00/tables/85111-0002_00.csv"
 
- 
     encoding_1 = get_encoding(data_source_1)
     encoding_2 = get_encoding(data_source_2)
 
-    
     data_till_2019 = pd.read_csv(data_source_1, delimiter=";", header=None, encoding=encoding_1, skiprows=6, skipfooter=3)
     data_in_2021 = pd.read_csv(data_source_2, delimiter=";", header=None, encoding=encoding_2, skiprows=6, skipfooter=3)
 
@@ -21,7 +19,7 @@ def main():
     
 def transform_data(df):
 
-    # drop columns 2, 3, 5; they hold unuseful information
+    # drop columns 2, 3, 5; they do not hold unuseful information
     df = df.drop([1, 2, 4], axis="columns")
     gas_types = df.iloc[0].tolist()[2:]
     new_col_names = ["year", "economic_sector"] + gas_types
@@ -40,7 +38,7 @@ def transform_data(df):
 def transform_2019_data(data_till_2019):
     # in the data_source_1, columns are years (1995, 1996, 1997, ..., 2019) rows are air emission types, eceonomic sectors, and their
     # corresponding values. For example column 1, row 1 till X correspond to carbondioxide, X+1 till Y correspond to methan, whereas column 3 corresponds to economic sectors. 
-    # Other two datasets have air emission types as columns, rows as years, and economic sectors. In order to be consistent, data source 1 needs to be converted to the same form
+    # The other dataset have air emission types as columns, rows as years, and economic sectors. In order to be consistent, data source 1 needs to be converted to the same form
     # as the other two datasets.
 
     # extract the years from the dataset, which are in the first row and have first 3 values empty
@@ -67,7 +65,6 @@ def transform_2019_data(data_till_2019):
         temp_df = pd.concat([air_emissions_and_sectors_df, data_till_2019[year]], axis=1)  
         # converts gas types as columns instead of repeating it in multiple rows
         temp_df = pd.pivot_table(temp_df,index="economic_sector", columns="air_emission_type", values=year, sort=False, aggfunc="first").reset_index()
-        print(temp_df)
 
         # added year information as a column
         temp_df.insert(0, "year", year)
