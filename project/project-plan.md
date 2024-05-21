@@ -19,6 +19,10 @@ Greenhouse gases and air pollutants are major contributors to both climate chang
 
 <!-- Describe each datasources you plan to use in a section. Use the prefic "DatasourceX" where X is the id of the datasource. -->
 
+All the datasources are obtained from the Statistisches Bundesamt (Destatis), Deutschland.
+License: Data licence Germany – attribution – Version 2.0, license text available at www.govdata.de/dl-de/by-2-0.			
+
+
 ### Datasource1: Air Emissions until 2019
 * Metadata URL: https://www.govdata.de/ckan/dataset/luftemisions-deutschland-jahre-luftemissionsartproduktionsbereich.rdf
 * Data URL: https://www-genesis.destatis.de/genesis/downloads/00/tables/85111-0001_00.csv
