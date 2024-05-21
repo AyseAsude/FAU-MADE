@@ -10,19 +10,34 @@ def main():
     data_source_3 = "https://www-genesis.destatis.de/genesis/downloads/00/tables/85111-0003_00.csv"
 
  
-    encoding_1 = get_encoding(data_source_1)
-    # encoding_2 = get_encoding(data_source_2)
+    # encoding_1 = get_encoding(data_source_1)
+    encoding_2 = get_encoding(data_source_2)
     # encoding_3 = get_encoding(data_source_3)
 
     
-    data_till_2019 = pd.read_csv(data_source_1, delimiter=";", header=None, encoding=encoding_1, skiprows=6, skipfooter=3)
-    # data_in_2021 = pd.read_csv(data_source_2, delimiter=";", header=None, encoding=encoding_2, skiprows=6, skipfooter=3)
+    # data_till_2019 = pd.read_csv(data_source_1, delimiter=";", header=None, encoding=encoding_1, skiprows=6, skipfooter=3)
+    data_in_2021 = pd.read_csv(data_source_2, delimiter=";", header=None, encoding=encoding_2, skiprows=6, skipfooter=3)
     # data_in_2022 = pd.read_csv(data_source_3, delimiter=";", header=None, encoding=encoding_3, skiprows=6, skipfooter=3)
 
-    transform_2019_data(data_till_2019)
-    
+    # transform_2019_data(data_till_2019)
+    transform_data(data_in_2021)
 
-    
+def transform_data(df):
+
+    # drop columns 2, 3, 5; they hold unuseful information
+    df = df.drop([1, 2, 4], axis="columns")
+    gas_types = df.iloc[0].tolist()[2:]
+    new_col_names = ["year", "economic_sector"] + gas_types
+    df.columns = new_col_names
+
+    # remove the first row which incorrectly contains information
+    df = df.iloc[1:]
+    # year is in float type, convert it to integer
+    df["year"] = df["year"].astype(int)
+    year_info = df.iloc[0,0]
+    filename = f"../data/Luftemissionen_{year_info}.csv"
+    df.to_csv(path_or_buf=filename, sep=";", index=False)
+        
 
 
 def transform_2019_data(data_till_2019):
@@ -34,8 +49,6 @@ def transform_2019_data(data_till_2019):
     # extract the years from the dataset, which are in the first row and have first 3 values empty
     years = data_till_2019.iloc[0].tolist()[3:]
     
-
-    #data_till_2019 = data_till_2019.rename(columns={0: "air_emission_type", 2: "economic sector"})
     
     new_column_names = ["air_emission_type", "economic_sector"] + years
     # delete the second column, it holds no useful information
@@ -44,17 +57,24 @@ def transform_2019_data(data_till_2019):
 
 
     data_till_2019.columns = new_column_names
-    # removes the first row which incorrectly containes year information
+    # remove the first row which incorrectly contains year information
     data_till_2019 = data_till_2019.iloc[1:]
 
-    air_emission_types = data_till_2019.iloc[:,0].unique().tolist()
-    print(air_emission_types)
-
+    # used to transform common gas types' and ecenomic sectors'name
     air_emissions_and_sectors_df = data_till_2019.iloc[:, :2]
+
+    # creates a csv file for each year
     for year in years:
+
+        # extract the current year and append it
         temp_df = pd.concat([air_emissions_and_sectors_df, data_till_2019[year]], axis=1)  
+        
+        # converts gas types as columns instead of repeating it in multiple rows
         temp_df = pd.pivot(temp_df,index="economic_sector", columns="air_emission_type", values=year).reset_index()
+        
+        # added year information as a column
         temp_df.insert(0, "year", year)
+
         filename = f"../data/Luftemissionen_{year}.csv"
         temp_df.to_csv(path_or_buf=filename, sep=";", index=False)
         
