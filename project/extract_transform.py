@@ -7,21 +7,18 @@ import requests
 def main():
     data_source_1 = "https://www-genesis.destatis.de/genesis/downloads/00/tables/85111-0001_00.csv"
     data_source_2 = "https://www-genesis.destatis.de/genesis/downloads/00/tables/85111-0002_00.csv"
-    data_source_3 = "https://www-genesis.destatis.de/genesis/downloads/00/tables/85111-0003_00.csv"
 
  
     encoding_1 = get_encoding(data_source_1)
-    # encoding_2 = get_encoding(data_source_2)
-    # encoding_3 = get_encoding(data_source_3)
+    encoding_2 = get_encoding(data_source_2)
 
     
     data_till_2019 = pd.read_csv(data_source_1, delimiter=";", header=None, encoding=encoding_1, skiprows=6, skipfooter=3)
-    # data_in_2021 = pd.read_csv(data_source_2, delimiter=";", header=None, encoding=encoding_2, skiprows=6, skipfooter=3)
-    # data_in_2022 = pd.read_csv(data_source_3, delimiter=";", header=None, encoding=encoding_3, skiprows=6, skipfooter=3)
+    data_in_2021 = pd.read_csv(data_source_2, delimiter=";", header=None, encoding=encoding_2, skiprows=6, skipfooter=3)
 
     transform_2019_data(data_till_2019)
-    # transform_data(data_in_2021)
-
+    transform_data(data_in_2021)
+    
 def transform_data(df):
 
     # drop columns 2, 3, 5; they hold unuseful information

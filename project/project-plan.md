@@ -30,19 +30,13 @@ License: Data licence Germany – attribution – Version 2.0, license text avai
 
 This dataset contains information about the types of gases emitted and the sectors responsible between 1995-2019.
 
-### Datasource2: Air Emissions in 2021
+### Datasource2: Air Emissions in 2021 
 * Metadata URL: https://www.govdata.de/ckan/dataset/luftemisions-deutschland-jahre-luftemissionsartenwirtschaftszweige.rdf
 * Data URL: https://www-genesis.destatis.de/genesis/downloads/00/tables/85111-0002_00.csv
 * Data Type: CSV
 
 This dataset contains information about the types of gases emitted and the sectors responsible in 2021.
 
-### Datasource3: Air Emissions in 2022
-* Metadata URL: https://www.govdata.de/ckan/dataset/luftemisions-deutschland-jahre-entstehungsart-dermissions-luftemissionsarten-wirtschaftszwe.rdf
-* Data URL: https://www-genesis.destatis.de/genesis/downloads/00/tables/85111-0003_00.csv
-* Data Type: CSV
-
-This dataset contains information about the types of gases emitted and the sectors responsible in 2022.
 ## Work Packages
 
 <!-- List of work packages ordered sequentially, each pointing to an issue with more details. -->
