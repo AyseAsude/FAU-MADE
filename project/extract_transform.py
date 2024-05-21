@@ -10,17 +10,17 @@ def main():
     data_source_3 = "https://www-genesis.destatis.de/genesis/downloads/00/tables/85111-0003_00.csv"
 
  
-    # encoding_1 = get_encoding(data_source_1)
-    encoding_2 = get_encoding(data_source_2)
+    encoding_1 = get_encoding(data_source_1)
+    # encoding_2 = get_encoding(data_source_2)
     # encoding_3 = get_encoding(data_source_3)
 
     
-    # data_till_2019 = pd.read_csv(data_source_1, delimiter=";", header=None, encoding=encoding_1, skiprows=6, skipfooter=3)
-    data_in_2021 = pd.read_csv(data_source_2, delimiter=";", header=None, encoding=encoding_2, skiprows=6, skipfooter=3)
+    data_till_2019 = pd.read_csv(data_source_1, delimiter=";", header=None, encoding=encoding_1, skiprows=6, skipfooter=3)
+    # data_in_2021 = pd.read_csv(data_source_2, delimiter=";", header=None, encoding=encoding_2, skiprows=6, skipfooter=3)
     # data_in_2022 = pd.read_csv(data_source_3, delimiter=";", header=None, encoding=encoding_3, skiprows=6, skipfooter=3)
 
-    # transform_2019_data(data_till_2019)
-    transform_data(data_in_2021)
+    transform_2019_data(data_till_2019)
+    # transform_data(data_in_2021)
 
 def transform_data(df):
 
@@ -68,10 +68,10 @@ def transform_2019_data(data_till_2019):
 
         # extract the current year and append it
         temp_df = pd.concat([air_emissions_and_sectors_df, data_till_2019[year]], axis=1)  
-        
         # converts gas types as columns instead of repeating it in multiple rows
-        temp_df = pd.pivot(temp_df,index="economic_sector", columns="air_emission_type", values=year).reset_index()
-        
+        temp_df = pd.pivot_table(temp_df,index="economic_sector", columns="air_emission_type", values=year, sort=False, aggfunc="first").reset_index()
+        print(temp_df)
+
         # added year information as a column
         temp_df.insert(0, "year", year)
 
