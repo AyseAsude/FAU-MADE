@@ -74,7 +74,8 @@ try:
     latest_file = get_latest_file(download_directory)
     new_file_name = os.path.join(download_directory, "Luftemissionen_2020_not_transformed.csv")
     # remove if the file already exists because we want to store the newest
-    os.remove(new_file_name)
+    if os.path.isfile(new_file_name):
+        os.remove(new_file_name)
     os.rename(latest_file, new_file_name)
 
 except Exception as e:

@@ -13,10 +13,10 @@ def main():
     encoding_1 = check_and_get_encoding(data_source_1)
     encoding_3 = check_and_get_encoding(data_source_3)
  
-    
-    data_till_2019 = pd.read_csv(data_source_1, delimiter=";", header=None, encoding=encoding_1, skiprows=6, skipfooter=3)
-    data_in_2020 = pd.read_csv(data_source_2, delimiter=";", header=None, skiprows=6, skipfooter=3)
-    data_in_2021 = pd.read_csv(data_source_3, delimiter=";", header=None, encoding=encoding_3, skiprows=6, skipfooter=3)
+    # Document contains some metadata in the first rows and in the footer, so they are discarded 
+    data_till_2019 = pd.read_csv(data_source_1, delimiter=";", header=None, encoding=encoding_1, skiprows=6, skipfooter=3, engine='python')
+    data_in_2020 = pd.read_csv(data_source_2, delimiter=";", header=None, skiprows=6, skipfooter=3, engine='python')
+    data_in_2021 = pd.read_csv(data_source_3, delimiter=";", header=None, encoding=encoding_3, skiprows=6, skipfooter=3, engine='python')
         
     transform_2019_data(data_till_2019)
     
@@ -30,6 +30,7 @@ def transform_2020(df):
 
     # first 5 values are also NaN in 2021 data, so they are skipped
     header = df.iloc[0, 5:]
+
     # identifies NaN columns
     nan_idx = header.isna()
     nan_idx = nan_idx[nan_idx == True].index
@@ -64,22 +65,24 @@ def transform_data(df):
 
 
 def transform_2019_data(data_till_2019):
-    # in the data_source_1, columns are years (1995, 1996, 1997, ..., 2019) rows are air emission types, eceonomic sectors, and their
-    # corresponding values. For example column 1, row 1 till X correspond to carbondioxide, X+1 till Y correspond to methan, whereas column 3 corresponds to economic sectors. 
-    # The other dataset have air emission types as columns, rows as years, and economic sectors. In order to be consistent, data source 1 needs to be converted to the same form
-    # as the other two datasets.
+    """In the data_source_1, columns are years (1995, 1996, 1997, ..., 2019) rows are air emission types, 
+    eceonomic sectors, and their corresponding values. For example column 1, row 1 till X correspond to 
+    carbondioxide, X+1 till Y correspond to methan, whereas column 3 corresponds to economic sectors.
+    The other dataset have air emission types as columns, rows as years, and economic sectors. In order 
+    to be consistent, data source 1 needs to be converted to the same form
+    as the other two datasets.
+    """
 
     # extract the years from the dataset, which are in the first row and have first 3 values empty
     years = data_till_2019.iloc[0].tolist()[3:]
     
-    
     new_column_names = ["air_emission_type", "economic_sector"] + years
+    
     # delete the second column, it holds no useful information
     data_till_2019 = data_till_2019.drop([1], axis="columns")
 
-
-
     data_till_2019.columns = new_column_names
+
     # remove the first row which incorrectly contains year information
     data_till_2019 = data_till_2019.iloc[1:]
 
@@ -88,14 +91,15 @@ def transform_2019_data(data_till_2019):
 
     # creates a csv file for each year
     for year in years:
-
         # extract the current year and append it
         temp_df = pd.concat([air_emissions_and_sectors_df, data_till_2019[year]], axis=1)  
+        
         # converts gas types as columns instead of repeating it in multiple rows
         temp_df = pd.pivot_table(temp_df,index="economic_sector", columns="air_emission_type", values=year, sort=False, aggfunc="first").reset_index()
 
         # added year information as a column
         temp_df.insert(0, "year", year)
+        
         save_as_csv(temp_df, year)
        
         
