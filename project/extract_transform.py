@@ -1,37 +1,65 @@
 import pandas as pd
-import numpy as np
 import chardet
 import requests
+import time
 
 
 def main():
+
     data_source_1 = "https://www-genesis.destatis.de/genesis/downloads/00/tables/85111-0001_00.csv"
-    data_source_2 = "https://www-genesis.destatis.de/genesis/downloads/00/tables/85111-0002_00.csv"
+    data_source_2 = f"../data/Luftemissionen_2020_not_transformed.csv"
+    data_source_3 = "https://www-genesis.destatis.de/genesis/downloads/00/tables/85111-0002_00.csv"
 
-    encoding_1 = get_encoding(data_source_1)
-    encoding_2 = get_encoding(data_source_2)
-
-    data_till_2019 = pd.read_csv(data_source_1, delimiter=";", header=None, encoding=encoding_1, skiprows=6, skipfooter=3)
-    data_in_2021 = pd.read_csv(data_source_2, delimiter=";", header=None, encoding=encoding_2, skiprows=6, skipfooter=3)
-
-    transform_2019_data(data_till_2019)
-    transform_data(data_in_2021)
+    encoding_1 = check_and_get_encoding(data_source_1)
+    encoding_3 = check_and_get_encoding(data_source_3)
+ 
     
+    data_till_2019 = pd.read_csv(data_source_1, delimiter=";", header=None, encoding=encoding_1, skiprows=6, skipfooter=3)
+    data_in_2020 = pd.read_csv(data_source_2, delimiter=";", header=None, skiprows=6, skipfooter=3)
+    data_in_2021 = pd.read_csv(data_source_3, delimiter=";", header=None, encoding=encoding_3, skiprows=6, skipfooter=3)
+        
+    transform_2019_data(data_till_2019)
+    
+    data_in_2020 = transform_2020(data_in_2020)
+    transform_data(data_in_2020)
+    
+    transform_data(data_in_2021)
+
+
+def transform_2020(df):
+
+    # first 5 values are also NaN in 2021 data, so they are skipped
+    header = df.iloc[0, 5:]
+    # identifies NaN columns
+    nan_idx = header.isna()
+    nan_idx = nan_idx[nan_idx == True].index
+    
+    # In order to be in the same format as 2021, set constant values for the first two columns and drop the NaN columns
+    df.iloc[:, 0] = 2020
+    df = df.drop(columns=nan_idx)
+    df.iloc[:, 1].fillna("Luftemissionen", inplace=True)
+
+    return df
+
+
 def transform_data(df):
 
-    # drop columns 2, 3, 5; they do not hold unuseful information
+    # drop columns 2, 3, 5; they do not hold useful information
     df = df.drop([1, 2, 4], axis="columns")
+
+    # year and economic sector column names do not exist in the original dataset, so add them to the dataframe
     gas_types = df.iloc[0].tolist()[2:]
     new_col_names = ["year", "economic_sector"] + gas_types
     df.columns = new_col_names
 
     # remove the first row which incorrectly contains information
     df = df.iloc[1:]
+
     # year is in float type, convert it to integer
     df["year"] = df["year"].astype(int)
     year_info = df.iloc[0,0]
-    filename = f"../data/Luftemissionen_{year_info}.csv"
-    df.to_csv(path_or_buf=filename, sep=";", index=False)
+
+    save_as_csv(df, year_info)
         
 
 
@@ -68,17 +96,56 @@ def transform_2019_data(data_till_2019):
 
         # added year information as a column
         temp_df.insert(0, "year", year)
-
-        filename = f"../data/Luftemissionen_{year}.csv"
-        temp_df.to_csv(path_or_buf=filename, sep=";", index=False)
+        save_as_csv(temp_df, year)
+       
         
 
 
-def get_encoding(url):
-    response = requests.get(url)
-    result = chardet.detect(response.content)
-    encoding = result['encoding']
-    return encoding
+def check_and_get_encoding(url, max_attempts=3, delay=1):
+    """
+    Tries to fetch the encoding of a web page from a given URL.
+    
+    Args:
+        url (str): The URL of the web page.
+        max_attempts (int, optional): Maximum number of attempts to make the request. Default is 3.
+        delay (int, optional): Time to wait (in seconds) between each attempt. Default is 1 second.
+    
+    Returns:
+        str or None: The encoding of the web page if successful, None otherwise.
+    """
+    attempt = 0
+    while attempt < max_attempts:
+        try:
+            response = requests.get(url)
+            if response.ok:
+                result = chardet.detect(response.content)
+                encoding = result['encoding']
+                return encoding
+            else:
+                print(f"Failed to request URL: {url}. Status code: {response.status_code}")
+        except Exception as e:
+            print(f"Failed to request URL: {url}. Error: {str(e)}")
+
+        time.sleep(delay)
+        attempt += 1
+
+    print(f"Failed to request URL: {url} after {max_attempts} attempts.")
+    return None
+
+
+def save_as_csv(df, year):
+    """
+    Saves a DataFrame to a CSV file.
+
+    Args:
+        df (DataFrame): The DataFrame to be saved.
+        year (int): The year associated with the data being saved.
+
+    Returns:
+        None
+    """
+    filename = f"../data/Luftemissionen_{year}.csv"
+    df.to_csv(path_or_buf=filename, sep=";", index=False)
 
 if __name__ == "__main__":
     main()
