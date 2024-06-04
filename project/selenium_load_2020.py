@@ -1,3 +1,9 @@
+"""
+Data source: Statistisches Bundesamt (Destatis), Genesis-Online, Date of retrieval: June 4, 2024;
+Data licence by-2-0: https://www.govdata.de/dl-de/by-2-0
+"""
+
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC

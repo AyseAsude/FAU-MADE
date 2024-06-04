@@ -1,3 +1,9 @@
+"""
+Data source: Statistisches Bundesamt (Destatis), Genesis-Online, Date of retrieval: June 4, 2024;
+Data licence by-2-0: https://www.govdata.de/dl-de/by-2-0
+"""
+
+
 import pandas as pd
 import chardet
 import requests
