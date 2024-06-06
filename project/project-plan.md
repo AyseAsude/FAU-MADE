@@ -48,6 +48,10 @@ This dataset contains information about the types of gases emitted and the secto
 
 1. Retrieve datasets and merge accordingly [#1][i1] 
 2. Document the data [#2][i2]
+3. Identify economic sectors with the highest gas emissions [#3][i3]
+4. Visualize every gas type for selected economic sectors in a specific year [#4][i4]
 
 [i1]: https://github.com/AyseAsude/FAU-MADE/issues/1
 [i2]: https://github.com/AyseAsude/FAU-MADE/issues/2
+[i3]: https://github.com/AyseAsude/FAU-MADE/issues/3
+[i4]: https://github.com/AyseAsude/FAU-MADE/issues/4
