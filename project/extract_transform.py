@@ -21,6 +21,7 @@ def main():
  
     # Document contains some metadata in the first rows and in the footer, so they are discarded 
     data_till_2019 = load(data_source_1, encoding_1)
+    print(data_till_2019.iloc[:6, :10])
     data_in_2020 = load(data_source_2)
     data_in_2021 = load(data_source_3, encoding_3)
         
@@ -85,7 +86,7 @@ def transform_2019_data(data_till_2019):
     years = data_till_2019.iloc[0].tolist()[3:]
     
     new_column_names = ["air_emission_type", "economic_sector"] + years
-    
+
     # delete the second column, it holds no useful information
     data_till_2019 = data_till_2019.drop([1], axis="columns")
 
@@ -97,6 +98,7 @@ def transform_2019_data(data_till_2019):
     # used to transform common gas types' and ecenomic sectors'name
     air_emissions_and_sectors_df = data_till_2019.iloc[:, :2]
 
+    filenames = []
     # creates a csv file for each year
     for year in years:
         # extract the current year and append it
@@ -107,9 +109,9 @@ def transform_2019_data(data_till_2019):
 
         # added year information as a column
         temp_df.insert(0, "year", year)
-        save_as_csv(temp_df, year)
-       
-        
+        save_loc = save_as_csv(temp_df, year)
+        filenames.append(save_loc)
+    return filenames
 
 
 def check_and_get_encoding(url, max_attempts=3, delay=1):
@@ -157,6 +159,7 @@ def save_as_csv(df, year):
     """
     filename = f"../data/Luftemissionen_{year}.csv"
     df.to_csv(path_or_buf=filename, sep=";", index=False)
+    return filename
 
 if __name__ == "__main__":
     main()
