@@ -34,7 +34,7 @@ pipeline TemperaturesPipeline {
     }
 
     block TemperaturesColumnDeleter oftype ColumnDeleter {
-        delete: [column F, column G, column H, column I, column J, column K, column L, column M, column N, column O];
+        delete: [column F, column G, column H, column I, column K, column L, column M, column N, column O];
     }
 
     block HeaderCellWriter oftype CellWriter {
