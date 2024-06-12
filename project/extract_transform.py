@@ -20,9 +20,9 @@ def main():
     encoding_3 = check_and_get_encoding(data_source_3)
  
     # Document contains some metadata in the first rows and in the footer, so they are discarded 
-    data_till_2019 = pd.read_csv(data_source_1, delimiter=";", header=None, encoding=encoding_1, skiprows=6, skipfooter=3, engine='python')
-    data_in_2020 = pd.read_csv(data_source_2, delimiter=";", header=None, skiprows=6, skipfooter=3, engine='python')
-    data_in_2021 = pd.read_csv(data_source_3, delimiter=";", header=None, encoding=encoding_3, skiprows=6, skipfooter=3, engine='python')
+    data_till_2019 = load(data_source_1, encoding_1)
+    data_in_2020 = load(data_source_2)
+    data_in_2021 = load(data_source_3, encoding_3)
         
     transform_2019_data(data_till_2019)
     
@@ -31,6 +31,8 @@ def main():
     
     transform_data(data_in_2021)
 
+def load(data_source, encoding="utf-8"):
+    return pd.read_csv(data_source, delimiter=";", header=None, encoding=encoding, skiprows=6, skipfooter=3, engine='python')
 
 def transform_2020(df):
 
@@ -105,7 +107,6 @@ def transform_2019_data(data_till_2019):
 
         # added year information as a column
         temp_df.insert(0, "year", year)
-        
         save_as_csv(temp_df, year)
        
         
