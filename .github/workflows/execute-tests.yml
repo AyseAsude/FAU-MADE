@@ -1,0 +1,26 @@
+name: Execute Tests
+on: [push]
+jobs:
+  Execute-Tests-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: main
+          
+      # Install python
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      # Install requirements
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt
+          
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+      - run: echo "This job's status is ${{ job.status }}."
