@@ -1,4 +1,4 @@
-name: Execute tests
+name: Execute Tests
 on: [push]
 jobs:
   Execute-Tests-Actions:
@@ -14,6 +14,11 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.11
+
+      # Install requirements
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt
           
       - name: List files in the repository
         run: |
