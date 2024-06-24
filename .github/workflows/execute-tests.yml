@@ -5,22 +5,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          path: main
+        uses: actions/checkout@v2
           
       # Install python
       - name: Set up Python 3.11
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         with:
           python-version: 3.11
 
+      - name: List files in the root directory
+        run: ls -la
+        
       # Install requirements
       - name: Install requirements
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
-          
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
+      
+      - name: Set up permission for tests.sh
+        run: chmod +x project/tests.sh
+        
+      - name: Run tests
+        working-directory: project
+        run: ./tests.sh
+      
       - run: echo "This job's status is ${{ job.status }}."
