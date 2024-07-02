@@ -8,7 +8,7 @@ import pandas as pd
 import chardet
 import requests
 import time
-
+import numpy as np
 
 def main():
 
@@ -21,19 +21,18 @@ def main():
  
     # Document contains some metadata in the first rows and in the footer, so they are discarded 
     data_till_2019 = load(data_source_1, encoding_1)
-    print(data_till_2019.iloc[:6, :10])
     data_in_2020 = load(data_source_2)
     data_in_2021 = load(data_source_3, encoding_3)
         
     transform_2019_data(data_till_2019)
     
     data_in_2020 = transform_2020(data_in_2020)
-    transform_data(data_in_2020)
+    transform_data(data_in_2020, 2020)
     
-    transform_data(data_in_2021)
+    transform_data(data_in_2021, 2021)
 
 def load(data_source, encoding="utf-8"):
-    return pd.read_csv(data_source, delimiter=";", header=None, encoding=encoding, skiprows=6, skipfooter=3, engine='python')
+    return pd.read_csv(data_source, delimiter=";", decimal=",", header=None, encoding=encoding, skiprows=6, skipfooter=3, engine='python')
 
 def transform_2020(df):
 
@@ -52,7 +51,14 @@ def transform_2020(df):
     return df
 
 
-def transform_data(df):
+def transform_data(df, year):
+
+    # years 2020 and 2021 do not have "Private Haushalte" directly, instead they have some separete measures
+    # under different names. In order to be consistent with the other majority of years, this information is
+    # extracted and then added as a new row.
+    private_hh_row = df[df[1] == "+  Luftemissionen der privaten Haushalte"]
+    private_hh_gas_info = private_hh_row.iloc[:, 5:].values.flatten().tolist()
+    new_row = [year, "Private Haushalte"] + private_hh_gas_info
 
     # drop columns 2, 3, 5; they do not hold useful information
     df = df.drop([1, 2, 4], axis="columns")
@@ -68,6 +74,15 @@ def transform_data(df):
     # year is in float type, convert it to integer
     df["year"] = df["year"].astype(int)
     year_info = df.iloc[0,0]
+
+
+
+
+    # delete information that does not exist in other years
+    df = df.iloc[:-9, :]
+    # add private housholds information
+    df.loc[len(df)] = new_row
+    df[gas_types] = np.ceil(df[gas_types].astype(float)).astype(int)
 
     save_as_csv(df, year_info)
         
