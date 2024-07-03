@@ -84,6 +84,8 @@ def transform_data(df, year):
     df.loc[len(df)] = new_row
     df[gas_types] = np.ceil(df[gas_types].astype(float)).astype(int)
 
+    df.rename(columns={"Schwefeloxid (SOx)": "Schwefeldioxid (SO2)"}, inplace=True)
+
     save_as_csv(df, year_info)
         
 
