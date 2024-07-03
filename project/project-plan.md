@@ -50,8 +50,16 @@ This dataset contains information about the types of gases emitted and the secto
 2. Document the data [#2][i2]
 3. Identify economic sectors with the highest gas emissions [#3][i3]
 4. Visualize every gas type for selected economic sectors in a specific year [#4][i4]
+5. Aggregate the amount of air emissions in each year [#5][i5]
+6. Compare 2020 and 2021 with other years [#6][i6]
+7. Visualize the proportion of each sector in a year [#7][i7]
+8. Identify the sectors who contribute the most to air emissions [#8][i8]
 
 [i1]: https://github.com/AyseAsude/FAU-MADE/issues/1
 [i2]: https://github.com/AyseAsude/FAU-MADE/issues/2
 [i3]: https://github.com/AyseAsude/FAU-MADE/issues/3
 [i4]: https://github.com/AyseAsude/FAU-MADE/issues/4
+[i5]: https://github.com/AyseAsude/FAU-MADE/issues/5
+[i6]: https://github.com/AyseAsude/FAU-MADE/issues/6
+[i7]: https://github.com/AyseAsude/FAU-MADE/issues/7
+[i8]: https://github.com/AyseAsude/FAU-MADE/issues/8
