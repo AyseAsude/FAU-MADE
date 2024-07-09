@@ -1,7 +1,3 @@
-# Exercise Badges
-
-![](https://byob.yarr.is/AyseAsude/FAU-MADE/score_ex1) ![](https://byob.yarr.is/AyseAsude/FAU-MADE/score_ex2) ![](https://byob.yarr.is/AyseAsude/FAU-MADE/score_ex3) ![](https://byob.yarr.is/AyseAsude/FAU-MADE/score_ex4) ![](https://byob.yarr.is/AyseAsude/FAU-MADE/score_ex5)
-
 # Top Emission Sources: Sectoral Trends in Air Pollution in Germany (1995-2021)
 
 Climate change has been a topic of discussion for decades. With the rise of natural phenomena such as
