@@ -14,3 +14,12 @@ these, the increase in greenhouse gases such as carbon dioxide and methane pose 
 the environment and is a major cause of climate change. In addition to greenhouse gases, airborne
 particles also threaten human health. Analyzing targeted data can yield valuable insights that help mitigate
 the effects of climate change.
+
+# Question
+
+**Which industries emit the most air pollutants and greenhouse gases over the years in Germany?**
+
+The focus of this project is to understand the amount of air emissions produced by each economic sector
+in Germany and identify the sectors with the highest emissions over the years. By identifying the economic
+sectors that generate the most air emissions, we can better target reduction efforts and raise awareness
+about our consumption habits.
